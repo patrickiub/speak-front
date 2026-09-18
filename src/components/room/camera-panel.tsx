@@ -54,17 +54,17 @@ export function CameraPanel() {
   }
 
   return (
-    <Card className="flex flex-col md:min-h-0">
+    <Card className="flex min-h-[280px] flex-col overflow-hidden md:min-h-0">
       <CardHeader>
         <CardTitle>Câmera — Libras</CardTitle>
         <p className="text-sm text-muted-foreground">
           Faça sinais para tradução automática
         </p>
       </CardHeader>
-      <CardContent className="flex min-h-0 flex-1 flex-col gap-4">
+      <CardContent className="flex flex-col gap-4 md:min-h-0 md:flex-1">
         <div
           className={cn(
-            "relative aspect-video w-full overflow-hidden rounded-lg md:aspect-auto md:min-h-0 md:flex-1",
+            "relative aspect-video w-full min-h-[240px] overflow-hidden rounded-lg md:aspect-auto md:h-full md:min-h-0 md:flex-1",
             isCameraOn ? "bg-slate-900" : "bg-muted"
           )}
         >

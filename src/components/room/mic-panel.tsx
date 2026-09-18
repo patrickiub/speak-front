@@ -11,7 +11,7 @@ import { useRoomStore } from "@/store/useRoomStore";
 export function MicPanel() {
   const addMessage = useRoomStore((state) => state.addMessage);
   const setListening = useRoomStore((state) => state.setListening);
-  const { isSupported, isListening, interimText, start, stop } =
+  const { isSupported, isListening, interimText, error, start, stop } =
     useSpeechRecognition();
   const wasListeningRef = useRef(false);
 
@@ -30,27 +30,21 @@ export function MicPanel() {
   }, [isListening, interimText, addMessage]);
 
   return (
-    <Card className="flex flex-col md:min-h-0">
+    <Card className="flex min-h-[220px] flex-col overflow-hidden md:min-h-0">
       <CardHeader>
         <CardTitle>Microfone — Fala</CardTitle>
       </CardHeader>
-      <CardContent className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3">
+      <CardContent className="flex min-h-[180px] flex-col items-center justify-center gap-3 md:min-h-0 md:flex-1">
         <button
           type="button"
           disabled={!isSupported}
-          aria-label="Segurar para falar"
-          onMouseDown={start}
-          onMouseUp={stop}
-          onMouseLeave={() => {
-            if (isListening) stop();
-          }}
-          onTouchStart={(event) => {
-            event.preventDefault();
-            start();
-          }}
-          onTouchEnd={(event) => {
-            event.preventDefault();
-            stop();
+          aria-label={isListening ? "Parar de falar" : "Toque para falar"}
+          onClick={() => {
+            if (isListening) {
+              stop();
+            } else {
+              start();
+            }
           }}
           className={cn(
             "flex size-24 shrink-0 items-center justify-center rounded-full text-white transition-colors",
@@ -63,7 +57,7 @@ export function MicPanel() {
         </button>
 
         <p className="text-sm text-muted-foreground">
-          Segure o botão para falar
+          {isListening ? "Toque para parar" : "Toque para começar"}
         </p>
 
         <p className="min-h-5 max-w-xs text-center text-sm text-muted-foreground">
@@ -75,6 +69,10 @@ export function MicPanel() {
             Reconhecimento de voz não suportado neste navegador. Use Chrome ou
             Edge.
           </p>
+        )}
+
+        {isSupported && error && (
+          <p className="text-center text-sm text-destructive">{error}</p>
         )}
       </CardContent>
     </Card>
