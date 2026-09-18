@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Camera, CameraOff } from "lucide-react";
+import { Camera, CameraOff, Hand } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -54,9 +54,12 @@ export function CameraPanel() {
   }
 
   return (
-    <Card className="flex min-h-[280px] flex-col overflow-hidden md:min-h-0">
+    <Card className="flex min-h-[280px] flex-col overflow-hidden border-border shadow-sm transition-shadow hover:shadow-md md:min-h-0">
       <CardHeader>
-        <CardTitle>Câmera — Libras</CardTitle>
+        <CardTitle className="flex items-center gap-1.5 text-base font-medium">
+          <Hand className="size-4 text-primary" />
+          Câmera — Libras
+        </CardTitle>
         <p className="text-sm text-muted-foreground">
           Faça sinais para tradução automática
         </p>
@@ -65,7 +68,7 @@ export function CameraPanel() {
         <div
           className={cn(
             "relative aspect-video w-full min-h-[240px] overflow-hidden rounded-lg md:aspect-auto md:h-full md:min-h-0 md:flex-1",
-            isCameraOn ? "bg-slate-900" : "bg-muted"
+            isCameraOn ? "bg-slate-900" : "bg-gradient-to-br from-secondary to-muted"
           )}
         >
           <video
@@ -77,15 +80,21 @@ export function CameraPanel() {
           />
 
           {!isCameraOn && (
-            <div className="flex size-full flex-col items-center justify-center gap-2 text-muted-foreground">
-              <Camera className="size-12" />
-              <span className="text-sm">Câmera desligada</span>
+            <div className="flex size-full flex-col items-center justify-center gap-2">
+              <div className="flex size-20 items-center justify-center rounded-full bg-card shadow-sm">
+                <Camera className="size-10 text-muted-foreground" />
+              </div>
+              <span className="text-sm font-medium">Câmera desligada</span>
+              <span className="text-xs text-muted-foreground">
+                Clique abaixo para começar
+              </span>
             </div>
           )}
 
           {isCameraOn && isProcessing && (
-            <div className="absolute right-2 top-2 animate-pulse rounded-full bg-black/60 px-2.5 py-1 text-xs text-white">
-              🖐 Analisando...
+            <div className="absolute right-3 top-3 flex items-center gap-2 rounded-full border border-border bg-card/90 px-3 py-1.5 text-xs font-medium backdrop-blur-sm">
+              <span className="size-2 animate-pulse rounded-full bg-primary" />
+              Analisando...
             </div>
           )}
         </div>

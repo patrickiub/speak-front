@@ -1,6 +1,5 @@
 import { AlertCircle, Hand, Mic, Type } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Message, MessageSource } from "@/lib/types";
 
@@ -17,19 +16,19 @@ const SOURCE_CONFIG: Record<
     label: "Libras",
     icon: Hand,
     align: "left",
-    bubbleClass: "bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-50",
+    bubbleClass: "bg-secondary text-secondary-foreground rounded-3xl rounded-bl-lg",
   },
   speech: {
     label: "Fala",
     icon: Mic,
     align: "right",
-    bubbleClass: "bg-blue-600 text-white",
+    bubbleClass: "bg-primary text-primary-foreground rounded-3xl rounded-br-lg",
   },
   text: {
     label: "Texto",
     icon: Type,
     align: "right",
-    bubbleClass: "bg-slate-700 text-white",
+    bubbleClass: "bg-muted text-foreground rounded-3xl rounded-br-lg",
   },
 };
 
@@ -50,30 +49,28 @@ export function MessageBubble({ message }: { message: Message }) {
   return (
     <div
       className={cn(
-        "flex flex-col",
+        "flex flex-col animate-in fade-in slide-in-from-bottom-2 duration-300",
         config.align === "right" ? "items-end" : "items-start"
       )}
     >
       <div
         className={cn(
-          "relative flex max-w-[80%] flex-col gap-1.5 rounded-2xl px-4 py-2.5 text-base",
+          "relative flex max-w-[80%] flex-col gap-1 px-4 py-2.5",
           config.bubbleClass
         )}
       >
-        <div className="flex items-center gap-1.5">
-          <Badge variant="secondary" className="gap-1">
-            <Icon className="size-3" />
-            {config.label}
-          </Badge>
+        <div className="mb-1 flex items-center gap-1.5 text-xs font-medium opacity-70">
+          <Icon className="size-3" />
+          {config.label}
           {lowConfidence && (
-            <span title="Confiança baixa — verifique se o texto está correto">
-              <AlertCircle className="size-3.5 text-amber-500" />
+            <span title="Confiança baixa na tradução">
+              <AlertCircle className="size-3.5" />
             </span>
           )}
         </div>
-        <p className="whitespace-pre-wrap">{message.content}</p>
+        <p className="text-base leading-relaxed">{message.content}</p>
       </div>
-      <span className="mt-1 text-xs text-slate-500 opacity-60">
+      <span className="mt-1 text-xs text-muted-foreground/60">
         {formatTime(message.timestamp)}
       </span>
     </div>

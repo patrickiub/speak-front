@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Send } from "lucide-react";
+import { MessageCircle, Send } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,16 +28,25 @@ export function ChatPanel() {
   }
 
   return (
-    <Card className="flex flex-1 flex-col md:min-h-0">
+    <Card className="flex flex-1 flex-col border-border shadow-sm md:min-h-0">
       <CardHeader>
-        <CardTitle>Conversa</CardTitle>
+        <CardTitle className="flex items-center gap-1.5 text-base font-medium">
+          <MessageCircle className="size-4 text-primary" />
+          Conversa
+        </CardTitle>
       </CardHeader>
       <CardContent className="flex min-h-0 flex-1 flex-col gap-4">
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto rounded-lg border border-border p-3">
           {messages.length === 0 ? (
-            <div className="flex flex-1 flex-col items-center justify-center text-center text-sm text-muted-foreground">
-              Nenhuma mensagem ainda. Ligue a câmera para começar a traduzir
-              Libras ou segure o microfone para falar.
+            <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
+              <div className="flex size-16 items-center justify-center rounded-full bg-secondary">
+                <MessageCircle className="size-7 text-muted-foreground" />
+              </div>
+              <p className="text-base font-medium">Nenhuma mensagem ainda</p>
+              <p className="max-w-xs text-sm text-muted-foreground">
+                Ligue a câmera para começar a traduzir Libras ou segure o
+                microfone para falar.
+              </p>
             </div>
           ) : (
             <div className="flex flex-col space-y-3">
@@ -51,7 +60,7 @@ export function ChatPanel() {
 
         <div className="flex shrink-0 flex-col gap-2">
           <Textarea
-            placeholder="Plano B: digite uma mensagem..."
+            placeholder="Digite uma mensagem..."
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
             onKeyDown={(event) => {
@@ -60,11 +69,12 @@ export function ChatPanel() {
                 handleSend();
               }
             }}
+            className="rounded-xl border-border focus-visible:ring-primary/50"
           />
           <div className="flex justify-end">
             <Button onClick={handleSend} disabled={!draft.trim()}>
-              <Send />
               Enviar
+              <Send />
             </Button>
           </div>
         </div>
