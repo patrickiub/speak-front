@@ -56,7 +56,7 @@ export function MessageBubble({ message }: { message: Message }) {
     >
       <div
         className={cn(
-          "relative flex max-w-[80%] flex-col gap-1 rounded-xl px-3 py-2 text-sm",
+          "relative flex max-w-[80%] flex-col gap-1.5 rounded-2xl px-4 py-2.5 text-base",
           config.bubbleClass
         )}
       >
@@ -73,7 +73,7 @@ export function MessageBubble({ message }: { message: Message }) {
         </div>
         <p className="whitespace-pre-wrap">{message.content}</p>
       </div>
-      <span className="mt-1 text-xs text-slate-500">
+      <span className="mt-1 text-xs text-slate-500 opacity-60">
         {formatTime(message.timestamp)}
       </span>
     </div>

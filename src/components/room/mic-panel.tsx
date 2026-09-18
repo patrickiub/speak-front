@@ -30,14 +30,11 @@ export function MicPanel() {
   }, [isListening, interimText, addMessage]);
 
   return (
-    <Card>
+    <Card className="flex flex-col md:min-h-0">
       <CardHeader>
         <CardTitle>Microfone — Fala</CardTitle>
-        <p className="text-sm text-muted-foreground">
-          Segure o botão para falar
-        </p>
       </CardHeader>
-      <CardContent className="flex flex-col items-center gap-4 py-6">
+      <CardContent className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3">
         <button
           type="button"
           disabled={!isSupported}
@@ -56,14 +53,18 @@ export function MicPanel() {
             stop();
           }}
           className={cn(
-            "flex size-32 items-center justify-center rounded-full text-white transition-colors",
+            "flex size-24 shrink-0 items-center justify-center rounded-full text-white transition-colors",
             !isSupported && "cursor-not-allowed bg-muted text-muted-foreground",
             isSupported && !isListening && "bg-blue-600 hover:bg-blue-500",
             isSupported && isListening && "animate-pulse bg-red-600"
           )}
         >
-          <Mic className="size-10" />
+          <Mic className="size-8" />
         </button>
+
+        <p className="text-sm text-muted-foreground">
+          Segure o botão para falar
+        </p>
 
         <p className="min-h-5 max-w-xs text-center text-sm text-muted-foreground">
           {interimText || (isListening ? "Ouvindo..." : "")}

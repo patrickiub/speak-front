@@ -10,11 +10,13 @@ export default function SalaPage() {
     <div className="flex h-screen flex-col">
       <RoomHeader />
 
-      <main className="grid flex-1 grid-rows-[auto_auto_minmax(0,1fr)] gap-4 overflow-y-auto p-4 md:grid-rows-[auto_minmax(0,1fr)] md:grid-cols-2 md:overflow-hidden">
-        <CameraPanel />
-        <MicPanel />
+      <main className="grid min-h-0 flex-1 grid-cols-1 gap-4 overflow-y-auto p-4 md:grid-cols-[2fr_1fr] md:grid-rows-[minmax(0,1fr)] md:overflow-hidden">
+        <div className="grid min-h-0 grid-rows-[auto_auto] gap-4 md:grid-rows-[65fr_35fr]">
+          <CameraPanel />
+          <MicPanel />
+        </div>
 
-        <div className="flex min-h-0 flex-col md:col-span-2">
+        <div className="flex min-h-[400px] flex-col md:min-h-0">
           <ChatPanel />
         </div>
       </main>
