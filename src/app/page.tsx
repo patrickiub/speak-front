@@ -26,22 +26,22 @@ const STEPS = [
 
 export default function Home() {
   return (
-    <div className="flex flex-1 flex-col bg-gradient-to-b from-background to-secondary/30">
-      <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6">
+    <div className="flex flex-1 flex-col bg-gradient-to-b from-background to-secondary/30 md:h-screen md:overflow-hidden">
+      <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6 md:shrink-0 md:py-4">
         <Logo />
         <ThemeToggle />
       </header>
 
-      <main className="flex min-h-[80vh] flex-col items-center justify-center px-6 text-center">
-        <div className="mb-6 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground">
+      <main className="flex min-h-[80vh] flex-col items-center justify-center px-6 text-center md:min-h-0 md:flex-1 md:py-2">
+        <div className="mb-6 rounded-full border border-border bg-card px-4 py-1.5 text-xs font-medium text-muted-foreground md:mb-4">
           ✨ Hackathon Oracle 2026
         </div>
 
-        <h1 className="max-w-3xl text-balance font-serif text-6xl tracking-tight md:text-7xl">
+        <h1 className="max-w-3xl text-balance font-serif text-6xl tracking-tight md:text-6xl">
           Conversas <span className="text-primary italic">sem barreiras</span>
         </h1>
 
-        <p className="mt-6 max-w-2xl text-balance text-lg text-muted-foreground">
+        <p className="mt-6 max-w-2xl text-balance text-lg text-muted-foreground md:mt-4">
           Speak conecta pessoas surdas e ouvintes em tempo real, traduzindo
           Libras e fala com IA.
         </p>
@@ -50,25 +50,25 @@ export default function Home() {
           href="/sala"
           className={cn(
             buttonVariants({ size: "lg" }),
-            "mt-10 h-12 gap-2 px-8 text-base"
+            "mt-10 h-12 gap-2 px-8 text-base md:mt-6"
           )}
         >
           Entrar na sala
           <ArrowRight className="size-4" />
         </Link>
 
-        <p className="mt-4 text-xs text-muted-foreground">
+        <p className="mt-4 text-xs text-muted-foreground md:mt-3">
           Sem cadastro • Funciona no navegador • Grátis
         </p>
       </main>
 
-      <section className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-4 px-6 pb-24 sm:grid-cols-3">
+      <section className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-4 px-6 pb-24 sm:grid-cols-3 md:shrink-0 md:pb-6">
         {STEPS.map((step) => (
           <div
             key={step.title}
-            className="flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-6 text-center shadow-sm"
+            className="flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-6 text-center shadow-sm md:gap-2 md:p-4"
           >
-            <div className="flex size-12 items-center justify-center rounded-full bg-secondary">
+            <div className="flex size-12 items-center justify-center rounded-full bg-secondary md:size-10">
               <step.icon className="size-5 text-primary" />
             </div>
             <p className="font-medium">{step.title}</p>
@@ -77,7 +77,7 @@ export default function Home() {
         ))}
       </section>
 
-      <footer className="w-full px-6 py-6 text-center text-xs text-muted-foreground">
+      <footer className="w-full px-6 py-6 text-center text-xs text-muted-foreground md:shrink-0 md:py-3">
         Feito com cuidado para acessibilidade
       </footer>
     </div>
