@@ -37,8 +37,8 @@ export function MicPanel() {
           Microfone — Fala
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex min-h-[180px] flex-col items-center justify-center gap-3 md:min-h-0 md:flex-1 md:justify-center md:gap-2 md:overflow-hidden md:py-2">
-        <div className="relative flex size-24 items-center justify-center md:size-20">
+      <CardContent className="flex min-h-[180px] flex-col items-center justify-center gap-3 md:min-h-0 md:flex-1 md:flex-row md:flex-wrap md:justify-center md:gap-6 md:py-2">
+        <div className="relative flex size-24 shrink-0 items-center justify-center md:size-20">
           {isListening && (
             <>
               <span className="absolute inset-0 animate-ping rounded-full bg-destructive opacity-75" />
@@ -68,21 +68,23 @@ export function MicPanel() {
           </button>
         </div>
 
-        <p className="flex items-center gap-1.5 text-sm text-muted-foreground md:text-xs">
-          {isListening ? (
-            <MicOff className="size-3.5" />
-          ) : (
-            <Mic className="size-3.5" />
-          )}
-          {isListening ? "Toque para parar" : "Toque para começar"}
-        </p>
+        <div className="flex flex-col items-center gap-2 md:min-w-0 md:flex-1 md:items-start md:justify-center md:gap-1.5">
+          <p className="flex items-center gap-1.5 text-sm text-muted-foreground md:text-xs">
+            {isListening ? (
+              <MicOff className="size-3.5" />
+            ) : (
+              <Mic className="size-3.5" />
+            )}
+            {isListening ? "Toque para parar" : "Toque para começar"}
+          </p>
 
-        <div className="min-h-[3rem] w-full max-w-xs overflow-hidden rounded-lg bg-secondary/50 px-4 py-2 text-center text-base italic text-muted-foreground md:min-h-0 md:line-clamp-1 md:py-1.5 md:text-sm">
-          {interimText || (isListening ? "Ouvindo..." : "")}
+          <div className="min-h-[3rem] w-full max-w-xs overflow-hidden rounded-lg bg-secondary/50 px-4 py-2 text-center text-base italic text-muted-foreground md:min-h-0 md:max-w-none md:line-clamp-2 md:py-1.5 md:text-left md:text-sm">
+            {interimText || (isListening ? "Ouvindo..." : "")}
+          </div>
         </div>
 
         {!isSupported && (
-          <p className="flex items-center gap-1.5 text-center text-sm text-destructive">
+          <p className="flex items-center gap-1.5 text-center text-sm text-destructive md:basis-full">
             <AlertCircle className="size-3.5" />
             Reconhecimento de voz não suportado neste navegador. Use Chrome ou
             Edge.
@@ -90,7 +92,7 @@ export function MicPanel() {
         )}
 
         {isSupported && error && (
-          <p className="flex items-center gap-1.5 text-center text-sm text-destructive">
+          <p className="flex items-center gap-1.5 text-center text-sm text-destructive md:basis-full">
             <AlertCircle className="size-3.5" />
             {error}
           </p>
