@@ -37,8 +37,8 @@ export function MicPanel() {
           Microfone — Fala
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex min-h-[180px] flex-col items-center justify-center gap-3 md:min-h-0 md:flex-1">
-        <div className="relative flex size-24 items-center justify-center">
+      <CardContent className="flex min-h-[180px] flex-col items-center justify-center gap-3 md:min-h-0 md:flex-1 md:justify-center md:gap-2 md:overflow-hidden md:py-2">
+        <div className="relative flex size-24 items-center justify-center md:size-20">
           {isListening && (
             <>
               <span className="absolute inset-0 animate-ping rounded-full bg-destructive opacity-75" />
@@ -57,18 +57,18 @@ export function MicPanel() {
               }
             }}
             className={cn(
-              "relative flex size-24 shrink-0 items-center justify-center rounded-full text-primary-foreground shadow-lg transition-all duration-200 hover:scale-105",
+              "relative flex size-24 shrink-0 items-center justify-center rounded-full text-primary-foreground shadow-lg transition-all duration-200 hover:scale-105 md:size-20",
               !isSupported &&
                 "cursor-not-allowed bg-muted text-muted-foreground shadow-none hover:scale-100",
               isSupported && !isListening && "bg-primary",
               isSupported && isListening && "bg-destructive"
             )}
           >
-            <Mic className="size-8" />
+            <Mic className="size-8 md:size-7" />
           </button>
         </div>
 
-        <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+        <p className="flex items-center gap-1.5 text-sm text-muted-foreground md:text-xs">
           {isListening ? (
             <MicOff className="size-3.5" />
           ) : (
@@ -77,7 +77,7 @@ export function MicPanel() {
           {isListening ? "Toque para parar" : "Toque para começar"}
         </p>
 
-        <div className="min-h-[3rem] w-full max-w-xs rounded-lg bg-secondary/50 px-4 py-2 text-center text-base italic text-muted-foreground">
+        <div className="min-h-[3rem] w-full max-w-xs overflow-hidden rounded-lg bg-secondary/50 px-4 py-2 text-center text-base italic text-muted-foreground md:min-h-0 md:line-clamp-1 md:py-1.5 md:text-sm">
           {interimText || (isListening ? "Ouvindo..." : "")}
         </div>
 
