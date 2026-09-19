@@ -17,7 +17,10 @@ export function CameraPanel() {
   const [error, setError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  const { isProcessing } = useLibrasCapture(stream);
+  const { status, handsDetected, startManual, stopManual } = useLibrasCapture(
+    videoRef,
+    isCameraOn
+  );
 
   useEffect(() => {
     if (stream && videoRef.current) {
@@ -91,7 +94,20 @@ export function CameraPanel() {
             </div>
           )}
 
-          {isCameraOn && isProcessing && (
+          {isCameraOn && handsDetected && (
+            <div className="absolute left-3 top-3 rounded-full border border-border bg-card/90 px-2.5 py-1 text-xs font-medium backdrop-blur-sm">
+              Mãos detectadas
+            </div>
+          )}
+
+          {isCameraOn && status === "capturing" && (
+            <div className="absolute right-3 top-3 flex items-center gap-2 rounded-full border border-border bg-card/90 px-3 py-1.5 text-xs font-medium backdrop-blur-sm">
+              <span className="size-2 animate-pulse rounded-full bg-teal-500" />
+              Capturando sinal...
+            </div>
+          )}
+
+          {isCameraOn && status === "analyzing" && (
             <div className="absolute right-3 top-3 flex items-center gap-2 rounded-full border border-border bg-card/90 px-3 py-1.5 text-xs font-medium backdrop-blur-sm">
               <span className="size-2 animate-pulse rounded-full bg-primary" />
               Analisando...
@@ -106,6 +122,19 @@ export function CameraPanel() {
           {isCameraOn ? <CameraOff /> : <Camera />}
           {isCameraOn ? "Parar câmera" : "Iniciar câmera"}
         </Button>
+
+        {/* Fallback manual: pode ser ocultado na demo se a segmentação automática estiver estável. */}
+        {isCameraOn && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="self-start text-xs text-muted-foreground"
+            onClick={status === "capturing" ? stopManual : startManual}
+            disabled={status === "analyzing"}
+          >
+            {status === "capturing" ? "Parar captura manual" : "Capturar sinal (manual)"}
+          </Button>
+        )}
 
         {error && <p className="text-sm text-destructive">{error}</p>}
       </CardContent>

@@ -44,7 +44,14 @@ export function MessageBubble({ message }: { message: Message }) {
   const config = SOURCE_CONFIG[message.source];
   const Icon = config.icon;
   const lowConfidence =
-    typeof message.confidence === "number" && message.confidence < 0.8;
+    message.source === "speech" &&
+    typeof message.confidence === "number" &&
+    message.confidence < 0.8;
+
+  const alternatives =
+    message.source === "libras" && message.top3 && message.top3.length > 1
+      ? message.top3.slice(1).map((t) => t.label)
+      : [];
 
   return (
     <div
@@ -69,6 +76,14 @@ export function MessageBubble({ message }: { message: Message }) {
           )}
         </div>
         <p className="text-base leading-relaxed">{message.content}</p>
+        {alternatives.length > 0 && (
+          <p
+            className="text-xs opacity-60"
+            title={`Outras possibilidades: ${alternatives.join(", ")}`}
+          >
+            alternativas: {alternatives.join(", ")}
+          </p>
+        )}
       </div>
       <span className="mt-1 text-xs text-muted-foreground/60">
         {formatTime(message.timestamp)}

@@ -6,6 +6,8 @@ export interface Message {
   content: string;
   confidence?: number;
   tokens?: string[];
+  distance?: number;
+  top3?: LibrasTop3[];
   timestamp: string;
 }
 
@@ -15,10 +17,17 @@ export interface STTResponse {
   durationMs: number;
 }
 
+export interface LibrasTop3 {
+  label: string;
+  distance: number;
+}
+
 export interface LibrasResponse {
-  text: string;
-  confidence: number;
-  tokens: string[];
+  success: boolean;
+  prediction: string;
+  distance: number;
+  top3: LibrasTop3[];
+  error: string | null;
 }
 
 export interface ApiError {
