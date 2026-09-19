@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { FilesetResolver, HandLandmarker } from "@mediapipe/tasks-vision";
 
 import { predictSign } from "@/lib/api";
-import { assembleSequence, buildFrame, type DetectedHand } from "@/lib/libras-sequence";
+import { assembleSequence, rawFrameFromResult, trimEmpty, type RawFrame } from "@/lib/libras-sequence";
 import { useRoomStore } from "@/store/useRoomStore";
 
 const WASM_URL = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm";
@@ -27,7 +27,7 @@ export function useLibrasCapture(videoRef: React.RefObject<HTMLVideoElement | nu
 
   const landmarkerRef = useRef<HandLandmarker | null>(null);
   const rafRef = useRef<number | null>(null);
-  const framesRef = useRef<number[][]>([]);
+  const framesRef = useRef<RawFrame[]>([]);
   const statusRef = useRef<LibrasCaptureStatus>("idle");
   const presentStreakRef = useRef(0);
   const absentStreakRef = useRef(0);
@@ -42,20 +42,25 @@ export function useLibrasCapture(videoRef: React.RefObject<HTMLVideoElement | nu
 
   const finishCapture = useCallback(
     async (reason: "auto" | "manual") => {
-      const frames = framesRef.current;
+      const rawFrames = framesRef.current;
       framesRef.current = [];
       presentStreakRef.current = 0;
       absentStreakRef.current = 0;
       manualRef.current = false;
 
-      if (frames.length < MIN_FRAMES_TO_SEND) {
+      const trimmed = trimEmpty(rawFrames);
+      const framesWithHand = trimmed.filter((f) => f.left || f.right).length;
+      if (framesWithHand < MIN_FRAMES_TO_SEND) {
         setStatusBoth("idle");
         return;
       }
 
       setStatusBoth("analyzing");
       try {
-        const sequence = assembleSequence(frames);
+        const sequence = assembleSequence(rawFrames);
+        if (process.env.NODE_ENV !== "production") {
+          console.log("[libras] sequence shape", sequence.length, sequence[0]?.length);
+        }
         const response = await predictSign(sequence);
         if (response.success && response.prediction) {
           addMessage({
@@ -115,12 +120,7 @@ export function useLibrasCapture(videoRef: React.RefObject<HTMLVideoElement | nu
       if (now < cooldownUntilRef.current) return;
 
       const result = landmarker.detectForVideo(video, now);
-      const hands: DetectedHand[] = (result.landmarks ?? []).map((landmarks, i) => ({
-        landmarks: landmarks.map((p) => ({ x: p.x, y: p.y, z: p.z })),
-        handedness: (result.handedness?.[i]?.[0]?.categoryName as "Left" | "Right") ?? "Right",
-      }));
-
-      const anyHand = hands.length > 0;
+      const anyHand = (result.landmarks?.length ?? 0) > 0;
       setHandsDetected(anyHand);
 
       if (statusRef.current === "idle") {
@@ -129,7 +129,7 @@ export function useLibrasCapture(videoRef: React.RefObject<HTMLVideoElement | nu
           if (presentStreakRef.current >= START_FRAMES_THRESHOLD) {
             presentStreakRef.current = 0;
             absentStreakRef.current = 0;
-            framesRef.current = [buildFrame(hands)];
+            framesRef.current = [rawFrameFromResult(result)];
             captureStartRef.current = now;
             setStatusBoth("capturing");
           }
@@ -140,7 +140,7 @@ export function useLibrasCapture(videoRef: React.RefObject<HTMLVideoElement | nu
       }
 
       if (statusRef.current === "capturing") {
-        framesRef.current.push(buildFrame(hands));
+        framesRef.current.push(rawFrameFromResult(result));
 
         if (anyHand) {
           absentStreakRef.current = 0;
