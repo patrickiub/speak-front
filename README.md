@@ -179,9 +179,10 @@ src/
 
 | Member | Role |
 |---|---|
-| **Victor Silva Mazzola** | Backend — Spring Boot, OCI integrations, deployment |
-| **Patrick Nascimento Andrade** | Frontend — Next.js, MediaPipe integration, Vercel deployment |
-| **Fabiana Luizon Martins Campos** | AI/ML — OCI Data Science, dataset & model pipeline |
+| **Victor Silva Mazzola** - _RM370764_ | Backend — Spring Boot, OCI integrations, deployment |
+| **Patrick Nascimento Andrade** - _RM369393_ | Frontend — Next.js, MediaPipe integration, Vercel deployment |
+| **Fabiana Luizon Martins Campos** - _RM370325_ | AI/ML — OCI Data Science, dataset & model pipeline |
+
 
 ---
 
