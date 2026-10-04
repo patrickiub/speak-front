@@ -22,8 +22,9 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "Speak — Conversas sem barreiras",
-  description: "Comunicação em tempo real entre pessoas surdas e ouvintes.",
+  title: "S.P.E.A.K — Seja compreendido",
+  description:
+    "O direito de ser ouvido começa pelo direito de ser compreendido. Tradução de Libras e fala em tempo real para atendimento psicológico.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
