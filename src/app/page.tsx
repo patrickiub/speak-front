@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Hand, MessageCircle, Mic } from "lucide-react";
 
 import { Logo } from "@/components/brand/logo";
+import { MobileNotice } from "@/components/mobile-notice";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -28,6 +29,8 @@ const STEPS = [
 export default function Home() {
   return (
     <div className="flex flex-1 flex-col bg-gradient-to-b from-background to-secondary/30">
+      <MobileNotice />
+
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6 md:shrink-0 md:py-4">
         <Logo />
         <ThemeToggle />
