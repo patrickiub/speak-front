@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AlertCircle, Mic, RotateCcw, Send, Trash2 } from "lucide-react";
+import { AlertCircle, Mic, RotateCcw, Send, Trash2, Volume2, VolumeX } from "lucide-react";
 
 import { Logo } from "@/components/brand/logo";
 import { MobileNotice } from "@/components/mobile-notice";
@@ -10,19 +10,23 @@ import { MobileCamera } from "@/components/room/mobile-room";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import type { Message } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useRoomStore } from "@/store/useRoomStore";
 
 import { AvatarStage, PLAYER_STATUS_LABEL } from "./avatar-stage";
 import { EnvBadge } from "./env-badge";
+import { useAutoSpeak } from "./use-auto-speak";
 import { useAutoTranslate } from "./use-auto-translate";
+import { useSpeechRecognitionV2 } from "./use-speech-recognition-v2";
 import { useVLibrasPlayer, type PlayerStatus } from "./use-vlibras-player";
 
 // Mesmo estilo das pílulas sobre a câmera da v1 (MobileCamera).
 const PILL =
   "flex items-center gap-1.5 rounded-full bg-background/80 px-2.5 py-1 text-xs font-medium shadow-sm backdrop-blur-md";
+
+const ROUND_BUTTON =
+  "flex size-9 items-center justify-center rounded-full bg-background/80 text-foreground shadow-md backdrop-blur-md transition-transform active:scale-95 disabled:opacity-40";
 
 /**
  * Mobile da /sala-v2, estilo live com convidado: câmera em cima, avatar
@@ -71,9 +75,9 @@ export function MobileRoomV2() {
 
 function AvatarLive() {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
-  const { status, progress, lastGloss, translate, repeat } =
-    useVLibrasPlayer(iframeRef);
+  const { status, progress, lastGloss, translate, repeat } = useVLibrasPlayer(iframeRef);
   useAutoTranslate(translate);
+  const speech = useAutoSpeak();
 
   return (
     <section aria-label="Avatar e conversa" className="min-h-0 flex-1 px-2 pt-1 pb-2">
@@ -87,16 +91,44 @@ function AvatarLive() {
 
         <div className="absolute inset-x-2 top-2 flex items-start justify-between gap-2">
           <AvatarStatusPill status={status} />
-          <button
-            type="button"
-            aria-label="Repetir última tradução"
-            title="Repetir última tradução"
-            onClick={repeat}
-            disabled={!lastGloss || status !== "idle"}
-            className="flex size-9 items-center justify-center rounded-full bg-background/80 text-foreground shadow-md backdrop-blur-md transition-transform active:scale-95 disabled:opacity-40"
-          >
-            <RotateCcw className="size-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            {speech.isSupported && (
+              <button
+                type="button"
+                aria-label={
+                  speech.enabled
+                    ? "Desligar voz das mensagens em Libras"
+                    : "Ligar voz das mensagens em Libras"
+                }
+                title={
+                  speech.enabled
+                    ? "Desligar voz das mensagens em Libras"
+                    : "Ligar voz das mensagens em Libras"
+                }
+                aria-pressed={speech.enabled}
+                onClick={speech.toggle}
+                className={ROUND_BUTTON}
+              >
+                {speech.enabled ? (
+                  <Volume2
+                    className={cn("size-4", speech.isSpeaking && "animate-pulse text-primary")}
+                  />
+                ) : (
+                  <VolumeX className="size-4" />
+                )}
+              </button>
+            )}
+            <button
+              type="button"
+              aria-label="Repetir última tradução"
+              title="Repetir última tradução"
+              onClick={repeat}
+              disabled={!lastGloss || status !== "idle"}
+              className={ROUND_BUTTON}
+            >
+              <RotateCcw className="size-4" />
+            </button>
+          </div>
         </div>
 
         <LiveConversation dimmed={status === "playing"} />
@@ -137,8 +169,7 @@ function LiveConversation({ dimmed }: { dimmed: boolean }) {
   const addMessage = useRoomStore((state) => state.addMessage);
   const setListening = useRoomStore((state) => state.setListening);
 
-  const { isSupported, isListening, interimText, error, start, stop } =
-    useSpeechRecognition();
+  const { isSupported, isListening, interimText, error, start, stop } = useSpeechRecognitionV2();
 
   const [draft, setDraft] = useState("");
   const listRef = useRef<HTMLDivElement | null>(null);
@@ -174,9 +205,7 @@ function LiveConversation({ dimmed }: { dimmed: boolean }) {
     setDraft("");
   }
 
-  const micError = !isSupported
-    ? "Voz não suportada neste navegador. Use Chrome ou Edge."
-    : error;
+  const micError = !isSupported ? "Voz não suportada neste navegador. Use Chrome ou Edge." : error;
 
   return (
     <div className="pointer-events-none absolute inset-x-0 top-[45%] bottom-0 flex flex-col">
