@@ -3,7 +3,7 @@ import { AlertCircle, Hand, Mic, Type } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Message, MessageSource } from "@/lib/types";
 
-const SOURCE_CONFIG: Record<
+export const SOURCE_CONFIG: Record<
   MessageSource,
   {
     label: string;

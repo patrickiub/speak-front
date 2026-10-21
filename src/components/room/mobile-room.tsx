@@ -58,7 +58,7 @@ export function MobileRoom() {
   );
 }
 
-function MobileCamera() {
+export function MobileCamera() {
   const isCameraOn = useRoomStore((state) => state.isCameraOn);
   const setCameraOn = useRoomStore((state) => state.setCameraOn);
 
