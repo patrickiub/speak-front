@@ -1,4 +1,8 @@
-import type { Viewport } from "next";
+import type { Metadata, Viewport } from "next";
+
+export const metadata: Metadata = {
+  title: "S.P.E.A.K — Sala",
+};
 
 // No mobile, o teclado virtual redimensiona o layout (e o 100dvh), mantendo
 // a barra de mensagem visível acima dele.

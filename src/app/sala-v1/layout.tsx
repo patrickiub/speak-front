@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
 
-// Rota de testes: não deve aparecer em buscadores.
+// Fallback da sala antiga (sem VLibras): só pela URL direta, fora dos buscadores.
 export const metadata: Metadata = {
-  title: "S.P.E.A.K — Sala v2 (testes)",
+  title: "S.P.E.A.K — Sala v1",
   robots: { index: false, follow: false },
 };
 
@@ -14,6 +14,6 @@ export const viewport: Viewport = {
   interactiveWidget: "resizes-content",
 };
 
-export default function SalaV2Layout({ children }: { children: React.ReactNode }) {
+export default function SalaV1Layout({ children }: { children: React.ReactNode }) {
   return children;
 }
