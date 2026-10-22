@@ -26,6 +26,9 @@ const DICTIONARY_URL = "https://dicionario2.vlibras.gov.br/2018.3.1/WEBGL/";
 const TRANSLATE_TIMEOUT_MS = 10_000;
 // Destrava a fila se o player nunca avisar que terminou.
 const PLAY_TIMEOUT_MS = 60_000;
+// Velocidade dos sinais (multiplicador do player; 1 = normal, o widget oferece
+// 0.5 a 2.5). 20% mais lento que o padrão para facilitar a leitura.
+const PLAYER_SPEED = 0.8;
 
 export type VLibrasAvatar = "icaro" | "hosana" | "guga";
 
@@ -150,7 +153,7 @@ export function useVLibrasPlayer(
       if (name === "on_load_player") {
         // Mesma sequência do widget ao carregar o player.
         send("PlayerManager", "setBaseUrl", DICTIONARY_URL);
-        send("PlayerManager", "setSlider", 1);
+        send("PlayerManager", "setSlider", PLAYER_SPEED);
         setupTimer = setTimeout(() => {
           send("PlayerManager", "Change", avatar);
           send("PlayerManager", "setSubtitlesState", 1);
