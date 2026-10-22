@@ -1,16 +1,18 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
-/** Indicador discreto de que a página é a versão de testes (/sala-v2). */
-export function EnvBadge() {
+/** Pílula com a versão da sala, ao lado do logo. */
+export function EnvBadge({ className }: { className?: string }) {
   return (
-    <Badge
-      variant="outline"
-      title="Versão de testes da sala"
-      className="text-[10px] text-muted-foreground"
+    <span
+      title="Versão 2 da sala"
+      className={cn(
+        "inline-flex shrink-0 items-center rounded-full border border-primary/40 bg-primary/15 px-2.5 py-0.5 text-sm leading-5 font-semibold text-primary",
+        className
+      )}
     >
-      v2 · testes
-    </Badge>
+      v2
+    </span>
   );
 }

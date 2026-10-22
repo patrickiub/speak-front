@@ -191,7 +191,7 @@ export function MobileCamera() {
   );
 }
 
-function CaptureStatusPill({
+export function CaptureStatusPill({
   status,
   handsDetected,
 }: {

@@ -1,12 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AlertCircle, Mic, RotateCcw, Send, Trash2, Volume2, VolumeX } from "lucide-react";
+import { AlertCircle, Maximize, Mic, Minimize, Send, Trash2 } from "lucide-react";
 
 import { Logo } from "@/components/brand/logo";
-import { MobileNotice } from "@/components/mobile-notice";
 import { SOURCE_CONFIG } from "@/components/room/message-bubble";
-import { MobileCamera } from "@/components/room/mobile-room";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,157 +12,74 @@ import type { Message } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useRoomStore } from "@/store/useRoomStore";
 
-import { AvatarStage, PLAYER_STATUS_LABEL } from "./avatar-stage";
 import { EnvBadge } from "./env-badge";
-import { useAutoSpeak } from "./use-auto-speak";
-import { useAutoTranslate } from "./use-auto-translate";
+import { useFullscreen } from "./use-fullscreen";
 import { useSpeechRecognitionV2 } from "./use-speech-recognition-v2";
-import { useVLibrasPlayer, type PlayerStatus } from "./use-vlibras-player";
 
-// Mesmo estilo das pílulas sobre a câmera da v1 (MobileCamera).
-const PILL =
+/*
+ * Peças do layout mobile da /sala (estilo live): header compacto, botão de
+ * tela cheia e a conversa flutuando sobre o avatar. Câmera e avatar ficam em
+ * RoomCamera/RoomAvatar, que servem aos dois layouts.
+ */
+
+// Mesmo estilo das pílulas sobre a câmera (MobileCamera).
+export const PILL =
   "flex items-center gap-1.5 rounded-full bg-background/80 px-2.5 py-1 text-xs font-medium shadow-sm backdrop-blur-md";
 
-const ROUND_BUTTON =
+export const ROUND_BUTTON =
   "flex size-9 items-center justify-center rounded-full bg-background/80 text-foreground shadow-md backdrop-blur-md transition-transform active:scale-95 disabled:opacity-40";
 
-/**
- * Mobile da /sala-v2, estilo live com convidado: câmera em cima, avatar
- * embaixo, e a conversa flutuando sobre a metade de baixo.
- *
- *  ┌──────────────┐
- *  │ header       │
- *  │ câmera       │  50%
- *  ├──────────────┤
- *  │ avatar       │
- *  │ ┊mensagens   │  50% (mensagens em overlay, com degradê)
- *  │ (🎤)[...](➤) │
- *  └──────────────┘
- */
-export function MobileRoomV2() {
+export function MobileRoomHeader() {
   const clearMessages = useRoomStore((state) => state.clearMessages);
 
   return (
-    <div className="flex h-[100dvh] flex-col overflow-hidden bg-background">
-      <MobileNotice />
-
-      <header className="flex h-12 shrink-0 items-center justify-between border-b border-border bg-card/60 px-3 backdrop-blur-md">
-        <div className="flex min-w-0 items-center gap-2">
-          <Logo size="sm" />
-          <EnvBadge />
-        </div>
-        <div className="flex items-center gap-1">
-          <ThemeToggle />
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Limpar conversa"
-            title="Limpar conversa"
-            onClick={clearMessages}
-          >
-            <Trash2 />
-          </Button>
-        </div>
-      </header>
-
-      <MobileCamera />
-      <AvatarLive />
-    </div>
-  );
-}
-
-function AvatarLive() {
-  const iframeRef = useRef<HTMLIFrameElement | null>(null);
-  const { status, progress, lastGloss, translate, repeat } = useVLibrasPlayer(iframeRef);
-  useAutoTranslate(translate);
-  const speech = useAutoSpeak();
-
-  return (
-    <section aria-label="Avatar e conversa" className="min-h-0 flex-1 px-2 pt-1 pb-2">
-      <div className="relative size-full overflow-hidden rounded-2xl bg-gradient-to-br from-secondary to-muted">
-        <AvatarStage
-          iframeRef={iframeRef}
-          status={status}
-          progress={progress}
-          className="absolute inset-0"
-        />
-
-        <div className="absolute inset-x-2 top-2 flex items-start justify-between gap-2">
-          <AvatarStatusPill status={status} />
-          <div className="flex items-center gap-2">
-            {speech.isSupported && (
-              <button
-                type="button"
-                aria-label={
-                  speech.enabled
-                    ? "Desligar voz das mensagens em Libras"
-                    : "Ligar voz das mensagens em Libras"
-                }
-                title={
-                  speech.enabled
-                    ? "Desligar voz das mensagens em Libras"
-                    : "Ligar voz das mensagens em Libras"
-                }
-                aria-pressed={speech.enabled}
-                onClick={speech.toggle}
-                className={ROUND_BUTTON}
-              >
-                {speech.enabled ? (
-                  <Volume2
-                    className={cn("size-4", speech.isSpeaking && "animate-pulse text-primary")}
-                  />
-                ) : (
-                  <VolumeX className="size-4" />
-                )}
-              </button>
-            )}
-            <button
-              type="button"
-              aria-label="Repetir última tradução"
-              title="Repetir última tradução"
-              onClick={repeat}
-              disabled={!lastGloss || status !== "idle"}
-              className={ROUND_BUTTON}
-            >
-              <RotateCcw className="size-4" />
-            </button>
-          </div>
-        </div>
-
-        <LiveConversation dimmed={status === "playing"} />
+    <header className="flex h-12 shrink-0 items-center justify-between border-b border-border bg-card/60 px-3 backdrop-blur-md">
+      <div className="flex min-w-0 items-center gap-2">
+        <Logo size="sm" />
+        <EnvBadge />
       </div>
-    </section>
+      <div className="flex items-center gap-1">
+        <ThemeToggle />
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Limpar conversa"
+          title="Limpar conversa"
+          onClick={clearMessages}
+        >
+          <Trash2 />
+        </Button>
+      </div>
+    </header>
   );
 }
 
-function AvatarStatusPill({ status }: { status: PlayerStatus }) {
-  const isActive = status === "translating" || status === "playing";
+/** Tela cheia estilo player. Some onde a página não pode ir para tela cheia (iPhone). */
+export function FullscreenButton() {
+  const { isSupported, isFullscreen, toggle } = useFullscreen();
+  if (!isSupported) return null;
+
+  const label = isFullscreen ? "Sair da tela cheia" : "Tela cheia";
   return (
-    <div
-      aria-live="polite"
-      className={cn(PILL, status === "error" ? "text-destructive" : "text-muted-foreground")}
+    <button
+      type="button"
+      aria-label={label}
+      title={label}
+      aria-pressed={isFullscreen}
+      onClick={toggle}
+      className={ROUND_BUTTON}
     >
-      {status === "error" ? (
-        <AlertCircle className="size-3.5 shrink-0" />
-      ) : (
-        <span
-          className={cn(
-            "size-2 rounded-full",
-            isActive ? "animate-pulse bg-primary" : "bg-muted-foreground/50"
-          )}
-        />
-      )}
-      {PLAYER_STATUS_LABEL[status]}
-    </div>
+      {isFullscreen ? <Minimize className="size-4" /> : <Maximize className="size-4" />}
+    </button>
   );
 }
 
 /**
  * Comentários estilo live + barra de mensagem, sobre o avatar.
- * Ocupa só a parte de baixo do avatar e some em degradê para cima; enquanto o
+ * Ocupa a parte de baixo do avatar e some em degradê para cima; enquanto o
  * avatar sinaliza, fica mais transparente para não esconder as mãos.
  */
-function LiveConversation({ dimmed }: { dimmed: boolean }) {
+export function LiveConversation({ dimmed }: { dimmed: boolean }) {
   const messages = useRoomStore((state) => state.messages);
   const addMessage = useRoomStore((state) => state.addMessage);
   const setListening = useRoomStore((state) => state.setListening);
@@ -208,7 +123,7 @@ function LiveConversation({ dimmed }: { dimmed: boolean }) {
   const micError = !isSupported ? "Voz não suportada neste navegador. Use Chrome ou Edge." : error;
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 top-[45%] bottom-0 flex flex-col">
+    <div className="pointer-events-none absolute inset-x-0 top-[40%] bottom-0 flex flex-col">
       <div
         ref={listRef}
         className={cn(
@@ -217,19 +132,19 @@ function LiveConversation({ dimmed }: { dimmed: boolean }) {
           dimmed && "opacity-75"
         )}
       >
-        <div className="flex min-h-full flex-col justify-end gap-1.5 pt-8 pb-1.5">
+        <div className="flex min-h-full flex-col justify-end gap-1 pt-8 pb-1">
           {messages.map((message) => (
             <LiveComment key={message.id} message={message} />
           ))}
           {isListening && (
-            <p className="w-fit max-w-[85%] rounded-2xl bg-black/45 px-3 py-1.5 text-sm italic text-white/80 backdrop-blur-sm">
+            <p className="w-fit max-w-[92%] rounded-2xl bg-black/45 px-2.5 py-1 text-sm leading-snug italic text-white/80 backdrop-blur-sm">
               {interimText || "Ouvindo..."}
             </p>
           )}
         </div>
       </div>
 
-      <div className="pointer-events-auto px-2 pb-2">
+      <div className="pointer-events-auto px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
         {micError && (
           <p className="mb-1.5 flex w-fit items-center gap-1.5 rounded-full bg-background/80 px-2.5 py-1 text-[11px] leading-tight text-destructive backdrop-blur-md">
             <AlertCircle className="size-3 shrink-0" />
@@ -299,13 +214,13 @@ function LiveComment({ message }: { message: Message }) {
   return (
     <div
       className={cn(
-        "w-fit max-w-[85%] animate-in fade-in slide-in-from-bottom-2 rounded-2xl px-3 py-1.5 text-sm leading-snug shadow-sm backdrop-blur-sm duration-300",
+        "w-fit max-w-[92%] animate-in fade-in slide-in-from-bottom-2 rounded-2xl px-2.5 py-1 text-sm leading-snug shadow-sm backdrop-blur-sm duration-300",
         message.source === "speech"
           ? "bg-primary text-primary-foreground"
           : "bg-black/65 text-white"
       )}
     >
-      <span className="mr-1.5 inline-flex items-center gap-1 align-[-1px] text-[11px] font-semibold opacity-80">
+      <span className="mr-1 inline-flex items-center gap-1 align-[-1px] text-[11px] font-semibold opacity-80">
         <Icon className="size-3" />
         {config.label}
       </span>
